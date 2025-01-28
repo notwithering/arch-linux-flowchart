@@ -1,0 +1,180 @@
+---
+config:
+  theme: neutral
+  look: classic
+  layout: elk
+---
+flowchart TB
+ subgraph s1["Pre-installation"]
+        n1(["Start"])
+        n2["Set the console keyboard layout"]
+        n6["loadkeys &lt;layout&gt;"]
+        n9["Set the console font"]
+        n10["setfont &lt;font&gt;"]
+        n13["Verify the boot mode"]
+        n14["cat /sys/firmware/efi/fw_platform_size"]
+        n15["32"]
+        n16["64"]
+        n17["The system is booted in UEFI mode and has a 64-bit x64 UEFI."]
+        n18["The system is booted in UEFI mode and has a 32-bit IA32 UEFI; while this is supported, it will limit the boot loader choice to systemd-boot and GRUB."]
+        n19@{ label: "File doesn't exist" }
+        n20["The system may be booted in BIOS (or CSM) mode."]
+        n21@{ label: "If the system did not boot in the mode you desired (UEFI vs BIOS), refer to your motherboard's manual." }
+        n22["Connect to the internet"]
+        n23["Ethernet"]
+        n24["Wi-Fi"]
+        n25["Mobile broadband modem"]
+        n26["Plug in the cable"]
+        n27["Get device name"]
+        n28["iwctl device list"]
+        n29["Device is enabled"]
+        n30["Device is not enabled"]
+        n31["iwctl station &lt;device-name&gt; scan"]
+        n35["Get network SSID"]
+        n36["iwctl station &lt;device-name&gt; get-networks"]
+        n37["iwctl station &lt;device-name&gt; connect &lt;SSID&gt;"]
+        n38["Enter passphrase if needed"]
+        n39[" "]
+        n40["FIXME: Needs instructions"]
+        n41["Verify connection"]
+        n42["ping google.com -c 1"]
+        n43["Update the system clock"]
+        n44["timedatectl"]
+  end
+ subgraph s2["Arch Linux Installation Guide"]
+        s1
+        s5["s5"]
+  end
+ subgraph s3["loadkeys"]
+        n47["Usage"]
+        n48["loadkeys [option...] [mapfile...]"]
+        n49["List available layouts"]
+        n50["localectl list-keymaps"]
+  end
+ subgraph s4["setfont"]
+        n51["Usage"]
+        n52["setfont [option...] [newfont...]"]
+        n53["List available fonts"]
+        n54["ls /usr/share/kbd/consolefonts"]
+  end
+ subgraph s5["Partitioning"]
+        n55(["Start"])
+        n56["Figure out the disk to partition"]
+        n57["lsblk"]
+        n58["fdisk -l"]
+        n59["fdisk &lt;disk&gt;"]
+        n61["For NVMe drives, the device names typically appear as /dev/nvme0n1 (for the entire drive) and partitions are numbered, such as /dev/nvme0n1p1, where p indicates the partition."]
+        n62["Create partition table"]
+        n70["UEFI"]
+        n71["BIOS"]
+  end
+ subgraph s6["fdisk"]
+        n63["Usage"]
+        n64["Change partition table"]
+        n65["fdisk [options]"]
+        n66["list partition table(s)"]
+        n67["fdisk [options] -l [&lt;disk&gt;...]"]
+        n68["Commands"]
+        n69@{ label: "**m:** Show help menu with all available commands.\n**p:** Print the current partition table.\n**n:** Create a new partition.\n**d:** Delete an existing partition.\n**t:** Change a partition's type (e.g., EFI System, Linux filesystem).\n**w:** Write changes to the disk and exit.\n**q:** Quit without saving changes." }
+  end
+    n1 --> n2
+    n2 -.-> n6
+    n2 --> n9
+    n9 -.-> n10
+    n9 --> n13
+    n13 -.-> n14
+    n14 --> n15 & n16 & n19
+    n16 --- n17
+    n15 --- n18
+    n19 --- n20
+    n20 --- n21
+    n18 --- n21
+    n17 --- n21
+    n23 --> n26
+    n24 --> n27
+    n27 -.-> n28
+    n27 --> n29 & n30
+    n30 --> n31
+    n35 -.-> n36
+    n35 --> n37
+    n37 --> n38
+    n13 --> n22
+    n22 -.- n39
+    n39 -.-> n23 & n24 & n25
+    n29 --> n35
+    n31 --> n35
+    n25 --> n40
+    n22 --> n41
+    n41 -.-> n42
+    n41 --> n43
+    n43 -.-> n44
+    n6 -.- s3
+    n47 --- n48
+    n49 --- n50
+    n51 --- n52
+    n10 -.- s4
+    n53 --- n54
+    n43 --> s5
+    n55 --> n56
+    n56 -.-> n57 & n58
+    n56 --> n59
+    n56 -.- n61
+    n59 --> n62
+    n63 --- n64 & n66
+    n64 --- n65
+    n66 --- n67
+    n68 --- n69
+    n59 -.- s6
+    n62 --> n70 & n71
+    n6@{ shape: hex}
+    n10@{ shape: hex}
+    n14@{ shape: hex}
+    n17@{ shape: text}
+    n18@{ shape: text}
+    n19@{ shape: rect}
+    n20@{ shape: text}
+    n21@{ shape: text}
+    n28@{ shape: hex}
+    n31@{ shape: hex}
+    n36@{ shape: hex}
+    n37@{ shape: hex}
+    n39@{ shape: anchor}
+    n40@{ shape: text}
+    n42@{ shape: hex}
+    n44@{ shape: hex}
+    n47@{ shape: text}
+    n48@{ shape: rect}
+    n49@{ shape: text}
+    n50@{ shape: hex}
+    n51@{ shape: text}
+    n52@{ shape: rect}
+    n53@{ shape: text}
+    n54@{ shape: hex}
+    n57@{ shape: hex}
+    n58@{ shape: hex}
+    n59@{ shape: hex}
+    n61@{ shape: text}
+    n63@{ shape: text}
+    n64@{ shape: text}
+    n66@{ shape: text}
+    n68@{ shape: text}
+    n69@{ shape: rect}
+     n2:::optional
+     n6:::mono
+     n9:::optional
+     n10:::mono
+     n14:::mono
+     n28:::mono
+     n31:::mono
+     n36:::mono
+     n37:::mono
+     n42:::mono
+     n50:::mono
+     n54:::mono
+     n57:::mono
+     n58:::mono
+     n59:::mono
+     n69:::left
+    classDef optional stroke-width:2px, stroke-dasharray: 2, fill:transparent
+    classDef mono font-family:monospace
+    classDef left text-align:left
